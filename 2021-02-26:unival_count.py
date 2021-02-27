@@ -10,17 +10,16 @@ def unival_count(root):
     return unival_count_aux(root)[1]
 
 def unival_count_aux(cur):
-    if not cur.left and not cur.right:
-        return (True, 1)
+    if cur is None:
+        return (True, 0)
 
-    left_is_unival, left_count = unival_count_aux(cur.left) if cur.left else (True, 0)
-    right_is_unival, right_count = unival_count_aux(cur.right) if cur.right else (True, 0)
-
-    is_unival = False
-    count = left_count + right_count
+    left_is_unival, left_count = unival_count_aux(cur.left)
+    right_is_unival, right_count = unival_count_aux(cur.right)
+    is_unival, count = False, left_count + right_count
 
     if left_is_unival and right_is_unival and \
-    (not cur.left or cur.left.val) == (not cur.right or cur.right.val) == cur.val:
+            (not cur.left or cur.left.val == cur.val) and \
+            (not cur.right or cur.right.val == cur.val):
         is_unival = True
         count += 1
 
@@ -31,7 +30,58 @@ solution = unival_count
 
 test_cases = [
     # input, output
-    (Node(0, Node(1), Node(0, Node(1, Node(1), Node(1)), Node(0))), 5),
+    (
+        Node(0,
+            Node(1),
+            Node(0,
+                Node(1,
+                    Node(1),
+                    Node(1),
+                ),
+                Node(0),
+            ),
+        ),
+        5
+    ),
+
+    (
+        Node("a",
+            Node("c"),
+            Node("b",
+                Node("b"),
+                Node("b",
+                    Node("b"),
+                    Node("b"),
+                ),
+            ),
+        ),
+        6,
+    ),
+
+    (
+        Node("a",
+            Node("c"),
+            Node("b",
+                Node("b"),
+                Node("b",
+                    None,
+                    Node("b"),
+                ),
+            ),
+        ),
+        5,
+    ),
+
+    (
+        Node("b",
+            Node("b"),
+            Node("b",
+                None,
+                Node("b"),
+            )
+        ),
+        4,
+    ),
 ]
 
 for inp, out in test_cases:
